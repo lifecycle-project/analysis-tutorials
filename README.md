@@ -78,6 +78,12 @@ If you already have some experience in doing R-analyses you can do these tutoria
 #### More specific implementation on LifeCycle-framework
 *Created by Angela Pinot de Moira*
 
+For the **novices**-tutorial you need to create a "Project": **Tutorials**
+and then create a table called: **tutorial_novice**
+Use these files for the novices tutorial:
+- [metadata](sample-data/novices/opal_dataset_metadata.xlsx)
+- [dataset](sample-data/novices/opal_dataset.csv)
+
 This tutorial includes a more specific anlaysis and datamanipulation implementation on LifeCycle data.
 
 ### Advanced tutorials
@@ -85,5 +91,11 @@ You can attend these tutorials if are certified by Angela or Sido in the LifeCyc
 
 #### Some more exploration on how to use DataSHIELD
 *Created by [Tom Bishop](https://github.com/tombishop1)*
+
+For the **advanced**-tutorial you need to create a "Project": **Tutorials**
+and then create a table called: **tutorial_advanced**
+Use these files for the advanced tutorial:
+- [metadata](sample-data/novices/opal_dataset_metadata.xlsx)
+- [dataset](sample-data/novices/opal_dataset.csv)
 
 This tutorial includes some data manipulation in R and some sample statitics you can perform in R.
