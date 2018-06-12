@@ -46,9 +46,9 @@ We are using github to do file-versioning and sharing.
 ## Tutorials
 There are three levels of tutorials we now distinguish.
 
-- [beginner](#Beginner tutorials)
-- [novice](#Novice tutorials)
-- [advanced](#Advanced tutorials) (only for experieced R-users)
+- [beginner](#beginner-tutorials)
+- [novice](#novice-tutorials)
+- [advanced](#advanced-tutorials) (only for experieced R-users)
 
 There are some prerequisites for these tutorials. You have to upload datasets to:
 
@@ -80,7 +80,8 @@ If you already have some experience in doing R-analyses you can do these tutoria
 
 This tutorial includes a more specific anlaysis and datamanipulation implementation on LifeCycle data.
 
-## Advanced tutorials
+### Advanced tutorials
+You can attend these tutorials if are certified by Angela or Sido in the LifeCycle project.
 
 #### Some more exploration on how to use DataSHIELD
 *Created by [Tom Bishop](https://github.com/tombishop1)*
