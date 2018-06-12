@@ -44,6 +44,12 @@ We are using github to do file-versioning and sharing.
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/git_credentials.png" width="500px">   
   
 ## Tutorials
+There are three levels of tutorials we now distinguish.
+
+- [beginner](#Beginner tutorials)
+- [novice](#Novice tutorials)
+- [advanced](#Advanced tutorials) (only for experieced R-users)
+
 There are some prerequisites for these tutorials. You have to upload datasets to:
 
 - test-opal1.gcc.rug.nl
@@ -69,12 +75,14 @@ An age analyses on 2 datasets in the 2 test-opals.
 ### Novice tutorials
 If you already have some experience in doing R-analyses you can do these tutorials.
 
-#### Some more exploration on how to use DataSHIELD
-*Created by [Tom Bishop](https://github.com/tombishop1)*
-
-This tutorial includes some data manipulation in R and some sample statitics you can perform in R.
-
 #### More specific implementation on LifeCycle-framework
 *Created by Angela Pinot de Moira*
 
 This tutorial includes a more specific anlaysis and datamanipulation implementation on LifeCycle data.
+
+## Advanced tutorials
+
+#### Some more exploration on how to use DataSHIELD
+*Created by [Tom Bishop](https://github.com/tombishop1)*
+
+This tutorial includes some data manipulation in R and some sample statitics you can perform in R.
