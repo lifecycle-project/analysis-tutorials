@@ -52,8 +52,8 @@ There are three levels of tutorials we now distinguish.
 
 There are some prerequisites for these tutorials. You have to upload datasets to:
 
-- test-opal1.gcc.rug.nl
-- test-opal2.gcc.rug.nl
+- https://opal1.domain.org
+- https://opal2.domain.org
 
 The datasets are speficyfied by in the difficulty level paragraphs.
 
