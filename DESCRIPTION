@@ -1,0 +1,9 @@
+Package: analysisTutorials
+Title: Tutorials and other test-scripts
+Version: 0.1
+Authors@R: person("Sido", "Haakma", email = "s.haakma=@rug.nl",
+                  role = c("aut", "cre"))
+Description: All the tutorials and other test R-scripts
+Depends: R (>= 3.1.0)
+License: MIT License
+LazyData: true
