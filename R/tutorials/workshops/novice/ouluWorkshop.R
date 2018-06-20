@@ -18,6 +18,8 @@ password <- c("pwd1", "pwd2")
 table <- c("Tutorials.tutorial_novice", "Tutorials.tutorial_novice")
 logindata <- data.frame(server,url,username,password,table)
 
+#hello
+
 # log out
 
 datashield.logout(opals)
