@@ -40,6 +40,10 @@ We are using github to do file-versioning and sharing.
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/terminal.png" width="350px" />
 
 - Execute the following command and be aware that you paste you username:token in the github-url. So: *"git remote set-url origin https://**username**:**token**@github.com/lifecycle-project/analysis-tutorials"*
+
+```bash
+git remote set-url origin https://sidohaakma:hrweiurnweklnfielbfadasdsad@github.com/lifecycle-project/analysis-tutorials
+```
  
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/git_credentials.png" width="500px">   
   
