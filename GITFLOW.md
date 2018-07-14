@@ -41,7 +41,7 @@ When you changed a fileset that is of use for other people to or you are just fi
 
 - Click on "commit"
 
-<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/commit_file.png" width="350px" />
+<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/commit_button.png" width="350px" />
 
 - Select the files you want to commit
 
@@ -50,6 +50,10 @@ When you changed a fileset that is of use for other people to or you are just fi
 - Enter the commit message
 
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/commit_message.png" width="350px" />
+
+- Click on commit and you get a commit id which you can also find on https://github.com/lifecycle-project/analysis-tutorials.git
+
+<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/commit_id.png" width="350px" />
 
 - Pull from remote
 
