@@ -37,7 +37,8 @@ _ Give the file a name
 
 
 ## Commiting files
-When you changed a fileset that is of use for other people to or you are just finished with it you can commit it into the repository. Be adviced once you commit a fileset you have need to push it as well to get it into the remote repository.
+When you changed a fileset that is of use for other people to or you are just finished with it you can commit it into the repository. 
+>note: Once you commit a fileset you have need to push it as well to get it into the remote repository.
 
 - Click on "commit"
 
@@ -55,13 +56,29 @@ When you changed a fileset that is of use for other people to or you are just fi
 
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/commit_id.png" width="350px" />
 
-- Pull from remote
-
-<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/pull.png" width="350px" />
-
-
 
 ## Pushing files
+To persits the change you made on a remote repository you to synchrnise (pull) with the remote repository and store your local changes on the remote repository (push). 
+
+- Pull from remote
+
+<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/pull_and_push.png" width="350px" />
+
+- Result of pull
+
+<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/pull_result.png" width="350px" />
+
+- Push local changes to remote repository
+
+<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/pull_and_push.png" width="350px" />
+
+- Check push result
+
+<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/push_result.png" width="350px" />
+
+When you have performed these steps the remote is in sync with your local repository,
+
+>note: The default workflow is to start each time you work in a repository where more than one contributor are with a pull from remote. There is one exception when you start a new project than you start with an "Initial commit".
 
 
 
