@@ -1,4 +1,6 @@
-# GIT-flow
+# GIT-workflow
+>note: please also see: [https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud](https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud)
+
 In the following tutorial you can practise the basics of working with version control. In this case GIT.
 There are a few main principles you have to understand.
 
