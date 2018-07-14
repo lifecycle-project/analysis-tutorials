@@ -27,6 +27,10 @@ You are writing a script: import.R.
 
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/save_file.png" width="350px" />
 
+_ Give the file a name
+
+<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/name_file.png" width="350px" />
+
 - Check in the commit-box what changes you made
 
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/commit_dialog.png" width="350px" />
@@ -35,18 +39,23 @@ You are writing a script: import.R.
 ## Commiting files
 When you changed a fileset that is of use for other people to or you are just finished with it you can commit it into the repository. Be adviced once you commit a fileset you have need to push it as well to get it into the remote repository.
 
+- Click on "commit"
 
-- Pull from remote
+<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/commit_file.png" width="350px" />
 
-<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/pull.png" width="350px" />
-
-- Then select the files you want to commit
+- Select the files you want to commit
 
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/commit_file.png" width="350px" />
 
 - Enter the commit message
 
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/commit_message.png" width="350px" />
+
+- Pull from remote
+
+<img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/pull.png" width="350px" />
+
+
 
 ## Pushing files
 
