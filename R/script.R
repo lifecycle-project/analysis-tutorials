@@ -1,2 +1,2 @@
 # Test script for R
-variable <- 'test variable'
+variable <- 'test variables'
