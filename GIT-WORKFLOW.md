@@ -30,7 +30,7 @@ You are writing a script: import.R.
 
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/save_file.png" width="350px" />
 
-_ Give the file a name
+- Give the file a name
 
 <img src="https://github.com/lifecycle-project/analysis-tutorials/raw/master/manuals/images/name_file.png" width="350px" />
 
@@ -81,7 +81,7 @@ To persits the change you made on a remote repository you to synchrnise (pull) w
 
 When you have performed these steps the remote is in sync with your local repository,
 
->note: The default workflow is to start each time you work in a repository where more than one contributor are with a pull from remote. There is one exception when you start a new project than you start with an "Initial commit".
+>note: The default workflow is to start each time you work in a repository with a pull from the remote repository. This is ncessary because other contributors can have changes pushed into the remote while your not working on it. There is one exception when you start a new project than you start with an "Initial commit".
 
 
 
