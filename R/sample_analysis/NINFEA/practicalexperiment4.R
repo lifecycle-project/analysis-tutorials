@@ -1,6 +1,5 @@
 #Practical Experiment 4 - DataSHIELD Working Group - September 2018
 
-# Comments by Sido
 
 #LOAD PACKAGES:
 library(opal)
@@ -38,7 +37,7 @@ ds.summary("D")$dnbc
 
 #########################
 #EXCLUSIONS
-#Possibile also for single cohorts, by specifying datasources=opal["cohort name"]
+#Possibile also for single cohorts by specifying datasources=opal["cohort name"]
 
 #Only livebirths
 ds.subset(x="D", subset="data", logicalOperator='outcome==', threshold=1)
@@ -97,7 +96,6 @@ ds.table1D("data$preg_alc_unit", type="split")
 #cross-tabulate
 ds.table2D("data$preg_alc", "data$preg_alc_unit")
 ds.table2D("data$preg_alc", "data$preg_alc_unit", type="split")
-#NB: Elfe-some of the subjects defined as drinkers coded as no drinkers for the alcohol quantity, ok?
 
 #Outcome summary
 ds.table1D("data$weight_who_ga") #summary over all servers (SGA 3.11%)
@@ -185,7 +183,7 @@ ds.recodeLevels('data$weight_who_ga', newCategories=c("1", "0", "0"), newobj='we
 ds.levels("weight_who_ga1")
 
 ds.changeRefGroup(x='weight_who_ga1', ref='0', newobj='weight_who_ga1', reorderByRef = FALSE)
-#NB: keep always reorderByRef = FALSE as it is also set as a default. 
+#NB: keep always reorderByRef = FALSE (set as a default). 
 #Otherwise it might assign wrong values when merged with the original dataset
 
 ds.levels("weight_who_ga1")
@@ -277,7 +275,6 @@ yi=c(model3_ninfea$coefficients["preg_alc1", "Estimate"],
      model3_elfe$coefficients["preg_alc1", "Estimate"])
 
 yi
-#the direction of the effect is different in Elfe
 
 #Create a new vector with standard errors from the stored models
 sei=c(model3_ninfea$coefficients["preg_alc1", "Std. Error"],
