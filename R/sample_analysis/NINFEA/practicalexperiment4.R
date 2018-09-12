@@ -1,5 +1,6 @@
 #Practical Experiment 4 - DataSHIELD Working Group - September 2018
 
+# Comments by Sido
 
 #LOAD PACKAGES:
 library(opal)
