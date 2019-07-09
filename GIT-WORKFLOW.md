@@ -1,9 +1,6 @@
 # GIT-workflow
 In the following tutorial you can practise the basics of working with version control. In this case GIT.
 
-
-Ahmed Test
-
 There are a few main principles you have to understand.
 
 - repositories (a set of files managed by GIT, local or remote)
