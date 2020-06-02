@@ -8,7 +8,6 @@
 
 library(opal)
 library(dsBaseClient)
-library(stringr)
 
 # This is the second of four scripts, which prepares the analysis dataset. 
 # 
@@ -42,21 +41,20 @@ ls("package:dsBaseClient")
 
 ## non-repeated 
 nonrep.vars <- list(
-  "child_id", "sex", "coh_country", "preg_dia", "agebirth_m_y", "preg_smk", 
-  "parity_m", "height_m", "prepreg_weight", "ethn3_m", "preg_ht", "ga_bj", 
-  "cohort_id")
+  "child_id", "sex", "agebirth_m_y", "preg_smk", "parity_m", "height_m", 
+  "prepreg_weight", "ga_bj"
+  )
 
 ## monthly repeated
 monthrep.vars <- list(
   "child_id", "age_years", "age_months", "height_", "weight_", "height_age", 
   "weight_age"
-)
+  )
 
 ## yearly repeated
 yearrep.vars <- list(
-  "child_id", "edu_m_", "edu_f1_", "age_years", "ndvi300_", "green_dist_", 
-  "green_size_", "greenyn300_", "areases_tert_"
-)
+  "child_id", "edu_m_", "age_years"
+  )
 
 
 ## ---- Make list of opal table names for each cohort --------------------------
@@ -78,23 +76,8 @@ cohorts_tables <- list(
     wp1_nrm = "lc_moba_core_2_0.2_0_core_non_rep_bmi_poc_study",
     wp1_mrm = "lc_moba_core_2_0.2_0_core_monthly_rep_bmi_poc_study",
     wp1_yrm = "lc_moba_core_2_0.2_0_core_yearly_rep_bmi_poc_study",
-    stringsAsFactors = FALSE), 
-  raine = data.frame(
-    opal_name = "raine",
-    wp1_nrm = "lc_raine_core_2_0.2_0_core_1_0_non_rep",
-    wp1_mrm = "lc_raine_core_2_0.2_0_core_1_0_monthly_rep",
-    wp1_yrm = "lc_raine_core_2_0.2_0_core_1_0_yearly_rep",
     stringsAsFactors = FALSE))
   
-  
-  #gecko = data.frame(
-  #  opal_name = "gecko",
-  #  wp1_nrm = "lc_gecko_core_2_0.2_0_core_1_0_non_rep",
-  #  wp1_mrm = "lc_gecko_core_2_0.2_0_core_1_0_monthly_rep",
-  #  wp1_yrm = "lc_gecko_core_2_0.2_0_core_1_0_yearly_rep",
-  #  stringsAsFactors = FALSE)
-  
-
 
 ## ---- Assign tables for all cohorts ------------------------------------------
 
@@ -143,7 +126,10 @@ ds.summary("yearrep")
 # message telling you this.
 
 
-## ---- Fill blank variables with NA -------------------------------------------
+
+################################################################################
+# 2. Add blank variables where cohorts don't have data  
+################################################################################
 
 # To perform operations across multiple cohorts, DS needs the same variables to
 # exist in each cohort. We use "ds.dataFrameFill" to add blank columns where
@@ -154,43 +140,56 @@ ds.summary("yearrep")
 ds.dataFrameFill("nonrep", "nonrep")
 ds.dataFrameFill("yearrep", "yearrep")
 
-## ---- Fix class --------------------------------------------------------------
 
-# Hopefully this can be removed once Demitiris has fixed ds.dataFrameFill. The
-# current problem is that it doesn't create a variable with the same class as 
-# the original, which then breaks ds.summary later on.
+################################################################################
+# 3. Correct classes of blank variables  
+################################################################################
 
-## Check where there are class discrepancies
+# At present ds.dataFrameFill doesn't make the filled variable the same class
+# as the original. This can cause problems later when we use ds.summary, as
+# it gets upset if the variables don't have the same class.
 
-sapply(nonrep.vars, function(x){
+
+## ---- First look to see where there are class discrepancies ------------------
+
+## Non-repeated
+check_nonrep <- sapply(nonrep.vars, function(x){
   
   ds.class(paste0("nonrep$", x))
   
 })
 
-## Fix offenders
-ds.asFactor("nonrep$ethn3_m", datasources = opals["moba"], 
-            newobj.name = "ethn3_m")
-
-ds.summary("nonrep$ethn3_m", datasources = opals["moba"])
-
-"ethn3_m", "ga_bj", 
+colnames(check_nonrep) <- nonrep.vars
+check_nonrep
 
 
+## Yearly repeated
+check_yearrep <- sapply(yearrep.vars, function(x){
+  
+  ds.class(paste0("yearrep$", x))
+  
+})
 
-ds.class("nonrep$ethn3_m")
-
-ds.dataFrameFill("nonrep", "nonrep")
-
-ds.class("nonrep$ethn3_m")
-
-ds.asFactor("nonrep$ethn3_m", datasources = opals["moba"], newobj.name = "ethn3_m")
+colnames(check_yearrep) <- yearrep.vars
+check_yearrep
 
 
+## ---- Fix problem variables --------------------------------------------------
+
+ds.asInteger("nonrep$ga_bj", newobj = "ga_bj_rev")
+
+sapply(names(opals), function(x){
+  
+  ds.dataFrame(c("nonrep", "ga_bj_rev"), newobj = "nonrep", 
+               datasources = opals[x])
+  
+})
+
+ds.class("nonrep$ga_bj_rev")
 
 
 ################################################################################
-# 2. Create baseline SEP variables
+# 3. Create baseline maternal education variable
 ################################################################################
 
 ## ---- Create variables for parental education in first year of life ----------
@@ -214,11 +213,10 @@ ds.reShape(
   data.name = "baseline_vars",
   timevar.name = "age_years",
   idvar.name = "child_id",
-  v.names = c("edu_m_", "edu_f1_", "greenyn300_", "green_dist_", "green_size_", 
-              "ndvi300_", "areases_tert_"), 
+  v.names = "edu_m_", 
   direction = "wide", 
   newobj = "baseline_wide"
-  )
+)
 
 
 ## ---- Rename baseline_vars more sensible names ----------------------------------------
@@ -229,41 +227,27 @@ ds.reShape(
 # existing dataframe; instead we have to create a new dataframe containing that 
 # variable and merge it back together.
 
-## First create a list with old and new variable names
-old_new <- list(
-            c("edu_f1_.0", "edu_f"),  c("edu_m_.0", "edu_m"), 
-            c("greenyn300_.0", "greenyn300"), c("green_dist_.0", "green_dist"), 
-            c("green_size_.0", "green_size"), c("ndvi300_.0", "ndvi300"), 
-            c("areases_tert_.0", "areases_tert")
-          )
-
-## Now use apply to create variables with new names
-sapply(old_new, function(x){
-  
-  ds.assign(
-    toAssign = paste0("baseline_wide$", x[1]),
-    newobj = x[2]
-  )  
-})
+ds.assign(
+  toAssign = "baseline_wide$edu_m_.0",
+  newobj = "edu_m"
+)  
 
 
-## ---- Merge with the non-repeated measures table -----------------------------
 sapply(names(opals), function(y){
-
-ds.cbind(
-  x = c("nonrep", "edu_f", "edu_m", "greenyn300", "green_dist", 
-        "green_size", "ndvi300", "areases_tert"), 
-  newobj = 'nonrep_2',
-  datasources = opals[y]
-)
+  
+  ds.cbind(
+    x = c("nonrep", "edu_m"), 
+    newobj = 'nonrep_2',
+    datasources = opals[y]
+  )
 })
 
 
 ################################################################################
-# 3. Calculate BMI scores 
+# 4. Calculate BMI scores 
 ################################################################################
 
-# "ds.assign" lets us use simple formula to create new variables
+# "ds.assign" also lets us use simple formula to create new variables
 
 ## ---- First we derive BMI scores ---------------------------------------------
 ds.assign(
@@ -271,26 +255,28 @@ ds.assign(
   newobj='bmi'
 )  
 
-sapply(names(opals), function(y){
+
+## ---- Now we merge back with monthly repeated dataset ------------------------
+sapply(names(opals), function(x){
   
-ds.cbind(
-  x = c('bmi', 'monthrep'), 
-  newobj = 'monthrep',
-  datasources = opals[y]
-)
+  ds.cbind(
+    x = c('bmi', 'monthrep'), 
+    newobj = 'monthrep',
+    datasources = opals[x]
+  )
 })
-  
+
 
 ################################################################################
-# 4. Create BMI variables corresponding to age brackets 
+# 5. Create BMI variables corresponding to age brackets 
 ################################################################################
 
 # As with everything in DS, this is a bit fiddly! We can dream that one day 
 # dplyr will be implemented :)
 #
-# What we are trying to do here is create 5 variables which capture BMI within
-# 5 time periods. If a given subject has BMI measurements within each of these
-# periods, they will have values for all 5. If they have more than 2 values 
+# What we are trying to do here is create 2 variables which capture BMI within
+# two time periods. If a given subject has BMI measurements within each of these
+# periods, they will have values for both. If they have more than 2 values 
 # within a given time period, we select the earliest.
 
 ## ---- First create list of categories and age thresholds ---------------------
@@ -301,18 +287,8 @@ ds.cbind(
 bmi_cats <- list(
   bmi_24 = data.frame(varname = "bmi_24", lower = 0, upper = 24, 
                       stringsAsFactors = FALSE),
-  
-  bmi_25_48 = data.frame(varname = "bmi_25_48", lower = 25, upper = 48, 
-                         stringsAsFactors = FALSE),
-  
-  bmi_49_96 = data.frame(varname = "bmi_49_96", lower = 49, upper = 96, 
-                         stringsAsFactors = FALSE),
-  
-  bmi_97_168 = data.frame(varname = "bmi_97_168", lower = 97, upper = 168, 
-                          stringsAsFactors = FALSE),
-  
-  bmi_169 = data.frame(varname = "bmi_169", lower = 169, upper = 215, 
-                       stringsAsFactors = FALSE)
+    bmi_49_96 = data.frame(varname = "bmi_49_96", lower = 49, upper = 96, 
+                         stringsAsFactors = FALSE)
 )
 
 
@@ -362,23 +338,23 @@ sapply(bmi_cats, function(y){
 # This is required for when we reshape back to wide format. Currently the only 
 # way I can find to do this is quite clunky but it works.
 
-sapply(names(opals), function(y){
+sapply(names(opals), function(z){
   
-  sapply(bmi_cats, function(z){
-  
-  ds.assign(
-    toAssign = paste0("(", z[, "varname"], "$age_months * 0)+", z[, "upper"]), 
-    newobj = "age_cat",
-    datasources = opals[y]
-  )
-  
-  ds.cbind(
-    x = c(z[, "varname"], "age_cat"), 
-    newobj = z[, "varname"],
-    datasources = opals[y]
-  )
-  
-})
+  sapply(bmi_cats, function(y){
+    
+    ds.assign(
+      toAssign = paste0("(", y[, "varname"], "$age_months * 0)+", y[, "upper"]), 
+      newobj = "age_cat",
+      datasources = opals[z]
+    )
+    
+    ds.cbind(
+      x = c(y[, "varname"], "age_cat"), 
+      newobj = y[, "varname"],
+      datasources = opals[z]
+    )
+    
+  })
   
 })
 
@@ -403,7 +379,6 @@ sapply(bmi_cats, function(y){
   )
   
 })
-
 
 ## ---- Merge these together ---------------------------------------------------
 
@@ -430,6 +405,7 @@ sapply(bmi_cats[2:5], function(x){
   )
 })
 
+
 ################################################################################
 # 6. Create maternal pre-pregnancy BMI variable  
 ################################################################################
@@ -443,16 +419,15 @@ ds.assign(
   newobj='prepreg_bmi'
 )  
 
-ds.dataFrameFill("bmi_poc", "bmi_poc")
-
 sapply(names(opals), function(y){
-
+  
   ds.cbind(
-  x = c('bmi_poc', 'prepreg_bmi'), 
-  newobj = 'bmi_poc', 
-  datasources = opals[y])
+    x = c('bmi_poc', 'prepreg_bmi'), 
+    newobj = 'bmi_poc', 
+    datasources = opals[y])
 })
 
+ds.dataFrameFill("bmi_poc", "bmi_poc")
 
 ################################################################################
 # 7. Recode parity to a binary variable  
@@ -469,16 +444,41 @@ ds.recodeLevels(
   datasources = opals)
 
 sapply(names(opals), function(y){
-ds.cbind(
-  x = c('bmi_poc', 'parity_bin'), 
-  newobj = 'bmi_poc', 
-  datasources = opals[y]
-)
+  ds.cbind(
+    x = c('bmi_poc', 'parity_bin'), 
+    newobj = 'bmi_poc', 
+    datasources = opals[y]
+  )
 })
-  
 
 ################################################################################
-# 8. Create analysis dataset  
+# 8. Create one ga variable
+################################################################################
+
+# Moba doesn't have ga_bj so we create one variable which represents ga.
+ds.assign(
+  toAssign = "bmi_poc$ga_bj_rev", 
+  newobj = "ga_all",
+  datasources = opals[opals!="moba"]
+) 
+
+ds.assign(
+  toAssign = "bmi_poc$ga_us", 
+  newobj = "ga_all",
+  datasources = opals["moba"]
+)
+
+sapply(names(opals), function(y){
+  ds.cbind(
+    x = c('bmi_poc', 'ga_all'), 
+    newobj = 'bmi_poc', 
+    datasources = opals[y]
+  )
+})
+
+
+################################################################################
+# 9. Create analysis dataset  
 ################################################################################
 
 # So when it comes to write up the analysis, we need to be able to specify an
@@ -487,16 +487,13 @@ ds.cbind(
 
 
 ## ---- First we specify vectors of exposures and outcomes ---------------------
-exp.vars <- c("edu_m", "ga_bj", "preg_dia", "greenyn300", "green_dist", 
-              "green_size", "ndvi300")  
+exp.vars <- c("edu_m", "ga_all")  
 
-out.vars <- c("bmi.24", "bmi.48", "bmi.96", "bmi.168", "bmi.215")
+out.vars <- c("bmi.24", "bmi.96")
 
-cov.vars <- c("sex", "preg_smk", "preg_ht", "parity_bin", "ethn3_m", 
-              "height_m", "prepreg_bmi", "agebirth_m_y", "areases_tert")
+cov.vars <- c("sex", "preg_smk", "parity_bin", "prepreg_bmi", "agebirth_m_y")
 
-other.vars <- c("age_months.24", "age_months.48", "age_months.96", 
-                "age_months.168")
+other.vars <- c("age_months.24", "age_months.96")
 
 
 ## ---- Now we create vars indicating whether any non-missing values are present
@@ -510,6 +507,9 @@ ds.make(toAssign = "any_exposure+any_outcome", newobj = "n_exp_out")
 ds.Boole(V1 = "n_exp_out", V2 = "2", Boolean.operator = "==", na.assign = 0, 
          newobj = "valid_case")
 
+## Check how many valid cases to make sure it's plausible
+ds.summary("valid_case")
+
 
 ## ---- Now we create a vector of all the variables we want to keep ------------
 keep_vars <- c(exp.vars, out.vars, cov.vars, other.vars)
@@ -521,25 +521,34 @@ keep_vars <- c(exp.vars, out.vars, cov.vars, other.vars)
 # that "keep.cols" uses the index of the variable rather than the variable
 # name and this may be different for each cohort. 
 
-var_index <- whichVars("bmi_poc", keep_vars)
+var_index <- lapply(names(opals), function(x){
+  
+  sapply(keep_vars, function(y){
+    
+    which(
+      str_detect(
+        ds.colnames("bmi_poc", datasources = opals[x])[[1]], y) == TRUE)
+  })  
+})
+
+names(var_index) <- names(opals)
 
 
 ## Now finally we subset based on valid cases and required variables
-sapply(names(opals), function(x){
+subset_info <- map2(names(opals), var_index, list)
+
+sapply(subset_info, function(x){
   
-  sapply(var_index, function(y){
-    
-    ds.dataFrameSubset(df.name = "bmi_poc", 
-                       V1.name = "valid_case", 
-                       V2.name = "1", Boolean.operator = "==", 
-                       keep.cols = y,
-                       keep.NAs = FALSE, newobj = "analysis_df", 
-                       datasources = opals[x])
-    })
-  })
-  
+  ds.dataFrameSubset(df.name = "bmi_poc", 
+                     V1.name = "valid_case", 
+                     V2.name = "1", Boolean.operator = "==", 
+                     keep.cols = x[[2]],
+                     keep.NAs = FALSE, newobj = "analysis_df", 
+                     datasources = opals[x[[1]]])
+})
+
 
 ## ---- Check that this has worked ok ------------------------------------------
-ds.summary("analysis_df")
 ds.summary("bmi_poc")
+ds.summary("analysis_df")
 

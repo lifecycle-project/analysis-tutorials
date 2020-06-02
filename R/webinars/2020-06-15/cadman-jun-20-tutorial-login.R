@@ -6,21 +6,21 @@
 ## Email: t.cadman@bristol.ac.uk
 ################################################################################    
 
-# This script is just to login to the servers and not to be uploaded to github
-# as it contains usernames and passwords
+# This is the first of three scripts, which manages logging into the servers.
 #
-# To make it easier to add login data for new cohorts, first we create separate
-# data frames of the login details for each cohort, then we use 'rbind' to 
-# combine into one dataframe. We use this combined dataframe to log in.
-#
-# Note that you need to specify one opal table at login, but you can't specify
-# all the tables you need - you have to assign these later
+# Here the username and passwords have been blanked out. If you are using git 
+# and this is a shared project it is helpful to keep this in a separate file as 
+# it can be added to .gitignore and thus not uploaded to the repository.
 
 library(opal)
 library(dsBaseClient)
+
 ################################################################################
 # 1. Define separately for each cohort 
 ################################################################################
+
+# To make it easier to add login data for new cohorts, first we create separate
+# data frames of the login details for each cohort.
 
 ## ---- GEN-R -------------------------------------------------------------------
 genr.logdata <- data.frame(
@@ -50,16 +50,22 @@ moba.logdata <- data.frame(
 )
 
 
-
 ################################################################################
 # 2. Combine into one dataframe  
 ################################################################################
+
+# Now we can use 'rbind' to combine into one dataframe. 
 logindata <- rbind(genr.logdata, ninfea.logdata, moba.logdata)
 
 
 ################################################################################
 # 3. Login using this dataframe  
 ################################################################################
+
+# We then use this combined dataframe to log in. Note that you need to specify 
+# one opal table at login, but you can't specify all the tables you need - you 
+# have to assign these later
+
 opals <- datashield.login(
   logins = logindata, 
   assign = FALSE
