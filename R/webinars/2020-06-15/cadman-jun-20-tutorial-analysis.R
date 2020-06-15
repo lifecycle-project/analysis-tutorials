@@ -21,10 +21,13 @@ source("~/ds-cs-functions/cs-get-stats.R")
 # 1. Descriptives  
 ################################################################################
 
-## ---- Extract data -----------------------------------------------------------
+## This is just using the ds.summary function
+test <- ds.summary("analysis_df$parity_bin")
+str(test)
 
-# Now we extract descriptives using the function "getStats" which I wrote.
 
+# Alternatively we can use a function I wrote which provides more details and
+# gives you the output in a list of categorical and continuous variables
 descriptives_ss <- cs.getStats(
   df = "analysis_df",
   vars = c(exp.vars, out.vars, cov.vars, other.vars)
@@ -56,6 +59,12 @@ mat_ed_ipd <- list(
   datasources = opals[c("genr", "ninfea")])
 )
 
+out <- ds.glm(
+  formula = "bmi.96 ~ edu_m + sex + age_months.96 + ninfea_dummy + moba_dummy",
+  data = "analysis_df", 
+  family = "gaussian")
+
+out
 
 ## ---- Gestational age at birth -----------------------------------------------
 ga_ipd <- list(
@@ -95,6 +104,7 @@ mat_ed_slma <- list(
   datasources = opals[c("genr", "ninfea")])
 )
 
+str(mat_ed_slma)
 
 ## ---- Gestational age at birth -----------------------------------------------
 ga_slma <- list(
