@@ -25,16 +25,79 @@ ls("package:dsBaseClient")
 
 
 ################################################################################
-# 1. Assign additional opal tables  
+# 1a. Assign additional opal tables - the long way  
 ################################################################################
 
-# The command to assign additional tables is "datashield.assign". However 
-# currently you can't assign all tables using one call to this function, 
-# because it will only work if all cohorts have named the tables identically,
-# which they haven't. We get around this by (i) creating a list of all the
-# variables we require, (ii) creating a dataframe with the names of required 
-# tables for each cohort, and (iii) use sapply to iterate through this list 
-# using "datashield.assign"
+datashield.assign(
+  opal = opals["genr"], 
+  symbol = "nonrep", 
+  value = "lifecycle_1_0.1_0_genr_1_0_non_repeated", 
+  variables = c(
+    "child_id", "sex", "agebirth_m_y", "preg_smk", "parity_m", "height_m", 
+    "prepreg_weight", "ga_bj", "ga_us", "cohort_id"))
+  
+datashield.assign(
+  opal = opals["ninfea"], 
+  symbol = "nonrep", 
+  value = "lc_ninfea_core_2_0.2_0_core_1_0_non_rep", 
+  variables = c(
+    "child_id", "sex", "agebirth_m_y", "preg_smk", "parity_m", "height_m", 
+    "prepreg_weight", "ga_bj", "ga_us", "cohort_id"))
+
+datashield.assign(
+  opal = opals["moba"], 
+  symbol = "nonrep", 
+  value = "lc_moba_core_2_0.2_0_core_non_rep_bmi_poc_study", 
+  variables = c(
+    "child_id", "sex", "agebirth_m_y", "preg_smk", "parity_m", "height_m", 
+    "prepreg_weight", "ga_bj", "ga_us", "cohort_id"))
+
+datashield.assign(
+  opal = opals["genr"], 
+  symbol = "monthrep", 
+  value = "lifecycle_1_0.1_0_genr_1_0_monthly_repeated", 
+  variables = c(
+    "child_id", "age_years", "age_months", "height_", "weight_", "height_age", 
+    "weight_age"))
+
+datashield.assign(
+  opal = opals["ninfea"], 
+  symbol = "monthrep", 
+  value = "lc_ninfea_core_2_0.2_0_core_1_0_monthly_rep", 
+  variables = c(
+    "child_id", "age_years", "age_months", "height_", "weight_", "height_age", 
+    "weight_age"))
+
+datashield.assign(
+  opal = opals["moba"], 
+  symbol = "monthrep", 
+  value = "lc_moba_core_2_0.2_0_core_monthly_rep_bmi_poc_study", 
+  variables = c(
+    "child_id", "age_years", "age_months", "height_", "weight_", "height_age", 
+    "weight_age"))
+
+datashield.assign(
+  opal = opals["genr"], 
+  symbol = "yearrep", 
+  value = "lifecycle_1_0.1_0_genr_1_0_yearly_repeated", 
+  variables = c("child_id", "edu_m_", "age_years"))
+
+datashield.assign(
+  opal = opals["ninfea"], 
+  symbol = "yearrep", 
+  value = "lc_ninfea_core_2_0.2_0_core_1_0_yearly_rep", 
+  variables = c("child_id", "edu_m_", "age_years"))
+
+
+datashield.assign(
+  opal = opals["moba"], 
+  symbol = "yearrep", 
+  value = "lc_moba_core_2_0.2_0_core_yearly_rep_bmi_poc_study", 
+  variables = c("child_id", "edu_m_", "age_years"))
+
+################################################################################
+# 1b Assign additional opal tables - the shorter & neater way  
+################################################################################
 
 ## ---- Create variable vectors ------------------------------------------------
 
@@ -71,23 +134,33 @@ cohorts_tables <- bind_rows(
     table = c(
       "lc_moba_core_2_0.2_0_core_non_rep_bmi_poc_study",
       "lc_moba_core_2_0.2_0_core_monthly_rep_bmi_poc_study",
-      "lc_moba_core_2_0.2_0_core_yearly_rep_bmi_poc_study"))) %>%
-  mutate(type = rep(c("nonrep", "monthrep", "yearrep"), 3))
+      "lc_moba_core_2_0.2_0_core_yearly_rep_bmi_poc_study"))) %>% 
+   mutate(type = rep(c("nonrep", "monthrep", "yearrep"), 3), 
+          varlist = paste0(type, ".vars"))
 
 cohorts_tables
 
 
 ## ---- Assign tables ----------------------------------------------------------
 cohorts_tables %>%
-  pmap(function(opal_name, table, type){
+  pmap(function(opal_name, table, type, varlist){
     
     datashield.assign(
       opal = opals[opal_name], 
       symbol = type, 
       value = table, 
-      variables = eval(parse(text = paste0(type, ".vars"))))
+      variables = eval(parse(text = varlist)))
   })
 
+
+## This is an example of the %>% operator
+example <- c(23.02, 34.22, 12.11, 23.98, 45.33)
+
+round(mean(example), 2)
+
+example %>%
+  mean() %>%
+  round(2)
 
 ## ---- Check that this has worked ---------------------------------------------
 ds.ls()
@@ -142,7 +215,6 @@ names(opals) %>%
       x= c("nonrep", "ga_bj_rev"), 
       newobj = "nonrep", 
       datasources = opals[.])
-
       )
 
 ## Check this has worked
@@ -191,6 +263,8 @@ ds.recodeLevels(
 
 
 ## ---- Dummy cohort variables -------------------------------------------------
+
+# These are needed for the IPD analysis
 coh_dummy <- tibble(
   cohort = c("ninfea_dummy", "moba_dummy"),
   value = c(103, 110))
@@ -206,6 +280,23 @@ coh_dummy %>%
         newobj = cohort)
       })
     
+
+
+ds.Boole(
+  V1 = "nonrep$cohort_id", 
+  V2 = 103,
+  Boolean.operator = "==",
+  numeric.output = TRUE, 
+  na.assign = "NA", 
+  newobj = "ninfea_dummy")
+
+ds.Boole(
+  V1 = "nonrep$cohort_id", 
+  V2 = 110,
+  Boolean.operator = "==",
+  numeric.output = TRUE, 
+  na.assign = "NA", 
+  newobj = "moba_dummy")
 
 ## ---- Combine these new variables with non-repeated dataframe ----------------
 
@@ -583,4 +674,32 @@ var_index %>%
 ## ---- Check that this has worked ok ------------------------------------------
 ds.summary("bmi_poc")
 ds.summary("analysis_df")
+
+
+################################################################################
+# 11. Clear up environment    
+################################################################################
+
+## ---- Remove unneeded objects ------------------------------------------------
+
+## One at a time
+ds.rm("bmi_49")
+
+## Multiple together
+cs.rmLots(c("bmi_49", "bmi_96"))
+
+## ---- Save workspace ---------------------------------------------------------
+datashield.workspace_save(opals, "june15")
+
+
+## ---- See list of saved workspaces -------------------------------------------
+datashield.workspaces(opals)
+
+
+## ---- Load saved workspace ---------------------------------------------------
+opals <- datashield.login(logindata, restore = "june15")
+
+
+## ---- Remove unneeded workspace ----------------------------------------------
+datashield.workspace_rm(opals, "june15")
 
