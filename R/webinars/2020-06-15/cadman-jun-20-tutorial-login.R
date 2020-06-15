@@ -35,9 +35,9 @@ genr.logdata <- data.frame(
 ninfea.logdata <- data.frame(
   server = "ninfea",
   url = "https://www.lifecycle-ninfea.unito.it",
-  user ="cadman", 
+  user ="xxxx", 
   password ="xxxx", 
-  table = "xxxx"
+  table = "lc_ninfea_core_2_0.2_0_core_1_0_non_rep"
 )
 
 ## ---- MOBA -------------------------------------------------------------------
@@ -56,7 +56,6 @@ moba.logdata <- data.frame(
 
 # Now we can use 'rbind' to combine into one dataframe. 
 logindata <- rbind(genr.logdata, ninfea.logdata, moba.logdata)
-
 
 ################################################################################
 # 3. Login using this dataframe  
