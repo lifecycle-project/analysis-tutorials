@@ -86,25 +86,34 @@ ds.summary("analysis_df", datasources = coh())
 ################################################################################
 
 ## ---- IPD --------------------------------------------------------------------
-mat_ed_ipd_stats <- map(mat_ed_ipd, ~regTab(model = ., type = "ipd"))
-ga_ipd_stats <- map(ga_ipd, ~regTab(model = ., type = "ipd"))  
+mat_ed_ipd_stats <- map(mat_ed_ipd, ~cs.regTab(model = ., type = "ipd"))
+ga_ipd_stats <- map(ga_ipd, ~cs.regTab(model = ., type = "ipd"))  
 
 names(mat_ed_ipd_stats) <- names(mat_ed_ipd)
 names(ga_ipd_stats) <- names(ga_ipd)
 
 mat_ed_ipd_stats
-ga_ed_ipd_stats
+ga_ipd_stats
 
 
 ## ---- SLMA -------------------------------------------------------------------
-mat_ed_slma_stats <- map(mat_ed_slma, ~regTab(model = ., type = "slma"))
-ga_slma_stats <- map(ga_slma, ~regTab(model = ., type = "slma"))
+mat_ed_slma_stats <- map(mat_ed_slma, ~cs.regTab(model = ., type = "slma"))
+ga_slma_stats <- map(ga_slma, ~cs.regTab(model = ., type = "slma"))
 
 names(mat_ed_slma_stats) <- names(mat_ed_slma)
 names(ga_slma_stats) <- names(ga_slma)
 
 mat_ed_slma_stats
 ga_slma_stats
+
+
+## ---- Compare IPD with SLMA --------------------------------------------------
+mat_ed_ipd_stats
+mat_ed_slma_stats
+
+# Pretty similar results which is encouraging!
+
+
 
 
 
