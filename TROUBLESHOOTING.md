@@ -29,10 +29,10 @@ remove.packages("DSOpal")
 remove.packages("dsBaseClient")
 
 install.packages("dplyr")
-install.packages("purr")
+install.packages("purrr")
 
 library(dplyr)
-library(purr)
+library(purrr)
 
 packages <- bind_rows(
   tibble(url = "https://github.com/obiba/cran/blob/gh-pages/src/contrib/Archive/opal/opal_2.6.0.tar.gz?raw=true",
