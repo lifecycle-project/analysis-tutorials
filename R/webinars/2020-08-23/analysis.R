@@ -47,20 +47,14 @@ cohorts_tables <- bind_rows(
       "lifecycle_1_0.1_0_genr_1_0_non_repeated",
       "lifecycle_1_0.1_0_genr_1_0_monthly_repeated")),
   tibble(
-    opal_name = "ninfea",
-    table = c(
-      "lc_ninfea_core_2_0.2_0_core_1_0_non_rep",
-      "lc_ninfea_core_2_0.2_0_core_1_0_monthly_rep")),
-  tibble(
     opal_name = "gecko",
     table = c(
       "lc_gecko_core_2_1.2_1_core_1_1_non_rep",
       "lc_gecko_core_2_1.2_1_core_1_1_monthly_rep"))) %>%
-  mutate(type = rep(c("nonrep", "monthrep"), 3))
+  mutate(type = rep(c("nonrep", "monthrep"), 2))
 
 ## ---- Assign tables ----------------------------------------------------------
 cohorts_tables %>%
-  filter(opal_name != "ninfea") %>%
   pwalk(function(opal_name, table, type){
     
     datashield.assign(
@@ -116,7 +110,7 @@ names(opals) %>%
 ds.summary("monthrep")
 
 ## Remove temporary object
-dh.tidyEnv("bmi", type = "remove")
+ds.rm("bmi")
 
 ################################################################################
 # 3. Create outcome variable (the long way)
@@ -265,14 +259,15 @@ ds.reShape(
 
 ## -------------------------------------------------------------------------- ##
 ## TEACHING PURPOSES ONLY - CODE NOT PART OF CREATING DS VARIABLES
-bmi_20_60_c %<>%
+bmi_20_60_wide <- bmi_20_60_c %>%
   group_by(child_id) %>%
   slice_head() %>%
   pivot_wider(
     id_cols = child_id,
     names_from = age_cat,
-    values_from = c(bmi, age_n)
-  )
+    values_from = c(bmi, age_n),
+    names_sep = ".") %>%
+print()
 ## -------------------------------------------------------------------------- ##
 
 ## Now join these variables with our non-repeated measures dataset
@@ -327,6 +322,7 @@ dh.getStats(df = "analysis_df_2", vars = c("bmi.60", "age.60"))
 ################################################################################
 # 5. This is especially useful if we want to make multiple outcome variables  
 ################################################################################
+
 dh.makeOutcome(
   df = "monthrep", 
   outcome = "bmi", 
