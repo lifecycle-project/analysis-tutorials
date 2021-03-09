@@ -26,10 +26,10 @@ ls("package:dsBaseClient")
 # The command to assign additional tables is "datashield.assign". However 
 # currently you can't assign all tables using one call to this function, 
 # because it will only work if all cohorts have named the tables identically,
-# which they haven't. We get around this by (i) creating a list of all the
-# variables we require, (ii) creating a dataframe with the names of required 
-# tables for each cohort, and (iii) use sapply to iterate through this list 
-# using "datashield.assign"
+# which they haven't. We get around this by (i) creating vectors of all the
+# variables we require, (ii) creating a table with the names of required 
+# tables for each cohort, and (iii) use "pmap" to iterate through the rows of
+# this table using "datashield.assign"
 
 ## ---- Create variable lists --------------------------------------------------
 
@@ -153,6 +153,9 @@ supporting_info %<>%
 supporting_info %<>%
   mutate(bmi_60 = ifelse(age_n <= 60, 1, 0)) %>%
   print()
+
+ds.summary("bmi_20")
+ds.summary("bmi_60")
 
 ## -------------------------------------------------------------------------- ##
 
@@ -280,7 +283,7 @@ ds.merge(
   newobj = "analysis_df"
 )
 
-
+ds.summary("analysis_df")
 
 ## Have a look at the variables we've created
 dh.getStats(df = "analysis_df", vars = c("bmi.60", "age_months.60"))
@@ -322,7 +325,6 @@ dh.getStats(df = "analysis_df_2", vars = c("bmi.60", "age.60"))
 ################################################################################
 # 5. This is especially useful if we want to make multiple outcome variables  
 ################################################################################
-
 dh.makeOutcome(
   df = "monthrep", 
   outcome = "bmi", 
